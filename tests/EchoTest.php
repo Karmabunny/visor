@@ -4,7 +4,9 @@ use karmabunny\echoserver\EchoServer;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * A basic echo test of path + body + headers.
  *
+ * The echo server is created in the before-class hook.
  */
 class EchoTest extends TestCase
 {
@@ -46,13 +48,22 @@ class EchoTest extends TestCase
 
 
 
-    public static function request($path, $headers = [], $body = null)
+    /**
+     * Perform a request.
+     *
+     * @param mixed $url
+     * @param array $headers
+     * @param mixed $body
+     * @return string|false
+     */
+    public static function request(string $url, array $headers = [], $body = null)
     {
         $http = [];
 
         if ($body !== null) {
             $http['method'] = 'POST';
             $http['content'] = $body;
+            $http['ignore_errors'] = true;
         }
 
         $header = '';
@@ -63,6 +74,6 @@ class EchoTest extends TestCase
         $http['header'] = rtrim($header, "\r\n");
 
         $context = stream_context_create([ 'http' => $http ]);
-        return @file_get_contents($path, false, $context);
+        return @file_get_contents($url, false, $context);
     }
 }
