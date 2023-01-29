@@ -2,6 +2,12 @@
 namespace karmabunny\echoserver;
 
 /**
+ * A server instance that echos whatever is given to it.
+ *
+ * The most recent payload is available for inspection with
+ * the `getLastPayload()` method.
+ *
+ * The server implementation is located aside this class, named `echo.php`.
  *
  * @package karmabunny\echoserver
  */
@@ -66,6 +72,7 @@ class EchoServer extends Server
 
 
     /**
+     * Get the last payload received by the echo server.
      *
      * @return array
      */

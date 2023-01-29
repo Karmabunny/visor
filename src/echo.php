@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * This is the server implementation half of the EchoServer server instance.
+ */
 if (
     PHP_SAPI === 'cli-server'
     and get_included_files()[0] === __FILE__

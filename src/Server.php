@@ -2,6 +2,17 @@
 namespace karmabunny\echoserver;
 
 /**
+ * A server instance manages the lifecycle of a CLI server script.
+ *
+ * This does not implement the CLI server itself but instead will create and
+ * destory a server instance. This is particularly useful for integration tests,
+ * should your application support the CLI mode server.
+ *
+ * There are two log files:
+ * - process.log - created by the host PHP (this file)
+ * - server.log - created by the server PHP (the 'target' script)
+ *
+ * For an example implementation, {@see EchoServer} and the `echo.php` script.
  *
  * @package karmabunny\echoserver
  */
@@ -15,6 +26,11 @@ abstract class Server
 
 
     /**
+     * Configure a server instance.
+     *
+     * This _does not_ start the server instance.
+     *
+     * Use {@see start()} method or the {@see create()}` shorthand.
      *
      * @param array|ServerConfig $config
      */
@@ -42,6 +58,7 @@ abstract class Server
 
 
     /**
+     * Configure and start a server.
      *
      * @param array|ServerConfig $config
      * @return static
@@ -56,6 +73,9 @@ abstract class Server
 
 
     /**
+     * The target server script.
+     *
+     * This is a script that executes in a 'cli-server' context.
      *
      * @return string
      */
@@ -63,6 +83,9 @@ abstract class Server
 
 
     /**
+     * Start this server.
+     *
+     * This does nothing if the server is already running.
      *
      * @return void
      * @throws \Exception
@@ -142,6 +165,9 @@ abstract class Server
 
 
     /**
+     * Perform a healthcheck on this server.
+     *
+     * This is server-specific, the default implementation is a stub.
      *
      * @return bool
      */
@@ -152,6 +178,7 @@ abstract class Server
 
 
     /**
+     * Stop this server.
      *
      * @return bool
      */
@@ -183,6 +210,9 @@ abstract class Server
 
 
     /**
+     * Get the working directory for the server script.
+     *
+     * This is where log files will be generated.
      *
      * @return string
      */
@@ -193,6 +223,7 @@ abstract class Server
 
 
     /**
+     * Get the host URL (including the schema + port number) of the server.
      *
      * @return string
      */
@@ -203,6 +234,7 @@ abstract class Server
 
 
     /**
+     * Log a message to the server log.
      *
      * @param string $message
      * @return void
@@ -217,6 +249,9 @@ abstract class Server
 
 
     /**
+     * Escape args in a CLI string.
+     *
+     * This is ripped from karmabunny/php.
      *
      * @param string $cmd
      * @param array $args
