@@ -10,9 +10,6 @@ abstract class Server
     /** @var ServerConfig */
     public $config;
 
-    /** @var string */
-    protected $target = '';
-
     /** @var resource|null */
     protected $process = null;
 
@@ -47,13 +44,22 @@ abstract class Server
 
     /**
      *
+     * @return string
+     */
+    protected abstract function getTargetScript(): string;
+
+
+    /**
+     *
      * @return void
      * @throws \Exception
      */
     public function start()
     {
-        if (!is_file($this->target)) {
-            throw new \Exception("Server target doesn't exist: '{$this->target}'");
+        $target = $this->getTargetScript();
+
+        if (!is_file($target)) {
+            throw new \Exception("Server target doesn't exist: '{$target}'");
         }
 
         $path = $this->getWorkingPath();
@@ -63,7 +69,6 @@ abstract class Server
         }
 
         $this->log('--------------------');
-
 
         $descriptors = [];
         // stdin
@@ -75,7 +80,7 @@ abstract class Server
 
         $cmd = self::escape('exec php -S {addr} {self} test', [
             'addr' => sprintf('%s:%d', $this->config->host, $this->config->port),
-            'self' => $this->target,
+            'self' => $target,
         ]);
 
         $this->log("Executing: {$cmd}");
@@ -155,7 +160,7 @@ abstract class Server
      */
     public function getWorkingPath(): string
     {
-        return $this->config->logpath ?: getcwd();
+        return $this->config->path ?: getcwd();
     }
 
 

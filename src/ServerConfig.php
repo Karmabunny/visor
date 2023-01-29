@@ -14,14 +14,16 @@ class ServerConfig
     /** @var int */
     public $port = 8080;
 
-    /** @var string|null */
-    public $logpath;
-
     /** @var int milliseconds */
     public $wait = 100;
 
     /** @var bool */
     public $autostop = true;
+
+    /**
+     * @var string|null
+     */
+    public $path;
 
 
     /**
@@ -34,5 +36,4 @@ class ServerConfig
             $this->$key = $value;
         }
     }
-
 }

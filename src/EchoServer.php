@@ -18,14 +18,20 @@ class EchoServer extends Server
         parent::__construct($config);
 
         $this->server_id = uniqid('echo');
-        $this->target = __DIR__ . '/echo.php';
+    }
+
+
+    /** @inheritdoc */
+    protected function getTargetScript(): string
+    {
+        return __DIR__ . '/echo.php';
     }
 
 
     /** @inheritdoc */
     public function getWorkingPath(): string
     {
-        return $this->config->logpath ?: (sys_get_temp_dir() . '/' . $this->server_id);
+        return $this->config->path ?: (sys_get_temp_dir() . '/' . $this->server_id);
     }
 
 
