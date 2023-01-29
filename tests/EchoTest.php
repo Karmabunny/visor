@@ -16,7 +16,9 @@ class EchoTest extends TestCase
     public static function setUpBeforeClass(): void
     {
         if (!self::$server) {
-            self::$server = EchoServer::create();
+            self::$server = EchoServer::create([
+                'logpath' => dirname(__DIR__) . '/echolog',
+            ]);
         }
     }
 
