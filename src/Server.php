@@ -29,6 +29,19 @@ abstract class Server
 
 
     /**
+     * If 'autostop' is configured, destroy the server instance.
+     *
+     * @return void
+     */
+    public function __destruct()
+    {
+        if ($this->config->autostop) {
+            $this->stop();
+        }
+    }
+
+
+    /**
      *
      * @param array|ServerConfig $config
      * @return static
@@ -60,6 +73,19 @@ abstract class Server
 
         if (!is_file($target)) {
             throw new \Exception("Server target doesn't exist: '{$target}'");
+        }
+
+        if ($this->process) {
+            $status = proc_get_status($this->process);
+
+            // Quit early.
+            if ($status['running']) {
+                return;
+            }
+            // Otherwise tidy-up.
+            else {
+                $this->process = null;
+            }
         }
 
         $path = $this->getWorkingPath();
@@ -138,6 +164,7 @@ abstract class Server
         $status = proc_get_status($this->process);
 
         if (!$status['running']) {
+            $this->process = null;
             return false;
         }
 
@@ -150,6 +177,7 @@ abstract class Server
             posix_kill($status['pid'], SIGKILL);
         }
 
+        $this->process = null;
         return true;
     }
 
