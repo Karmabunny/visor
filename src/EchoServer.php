@@ -1,5 +1,5 @@
 <?php
-namespace karmabunny\echoserver;
+namespace karmabunny\visor;
 
 /**
  * A server instance that echos whatever is given to it.
@@ -9,7 +9,7 @@ namespace karmabunny\echoserver;
  *
  * The server implementation is located aside this class, named `echo.php`.
  *
- * @package karmabunny\echoserver
+ * @package karmabunny\visor
  */
 class EchoServer extends Server
 {

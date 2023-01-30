@@ -1,6 +1,6 @@
 <?php
 
-use karmabunny\echoserver\EchoServer;
+use karmabunny\visor\EchoServer;
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/Http.php';

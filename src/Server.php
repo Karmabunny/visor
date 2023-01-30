@@ -1,5 +1,5 @@
 <?php
-namespace karmabunny\echoserver;
+namespace karmabunny\visor;
 
 /**
  * A server instance manages the lifecycle of a CLI server script.
@@ -14,7 +14,7 @@ namespace karmabunny\echoserver;
  *
  * For an example implementation, {@see EchoServer} and the `echo.php` script.
  *
- * @package karmabunny\echoserver
+ * @package karmabunny\visor
  */
 abstract class Server
 {

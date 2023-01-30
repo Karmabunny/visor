@@ -1,4 +1,4 @@
-# EchoServer
+# Visor
 
 This is a small utility to wrap the built-in PHP [cli-server](https://www.php.net/manual/en/features.commandline.webserver.php) feature.
 
@@ -16,7 +16,7 @@ There are ~~two~~ three parts to this library:
 Using Composer:
 
 ```
-composer require karmabunny/echoserver
+composer require karmabunny/visor
 ```
 
 
@@ -28,7 +28,7 @@ This is ideal for creating small integration tests with a local application or c
 ### Server Instance
 
 ```php
-use karmabunny\echoserver\Server;
+use karmabunny\visor\Server;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -61,7 +61,7 @@ class MyServerTest extends TestCase
 ### Echo Server
 
 ```php
-use karmabunny\echoserver\EchoServer;
+use karmabunny\visor\EchoServer;
 use PHPUnit\Framework\TestCase;
 
 class ClientTest extends TestCase
@@ -90,7 +90,7 @@ class ClientTest extends TestCase
 ### Mock Server
 
 ```php
-use karmabunny\echoserver\MockServer;
+use karmabunny\visor\MockServer;
 use PHPUnit\Framework\TestCase;
 
 class FakeTest extends TestCase

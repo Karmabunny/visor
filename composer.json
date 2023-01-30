@@ -1,12 +1,12 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "karmabunny/echoserver",
-    "description": "A simple echo server for quick-and-dirty mocking",
+    "name": "karmabunny/visor",
+    "description": "A supervisor for PHP-CLI servers",
     "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "karmabunny\\echoserver\\": "src/"
+            "karmabunny\\visor\\": "src/"
         }
     },
     "require-dev": {

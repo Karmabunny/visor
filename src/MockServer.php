@@ -1,10 +1,10 @@
 <?php
-namespace karmabunny\echoserver;
+namespace karmabunny\visor;
 
 /**
  * A mock server that can return templated responses.
  *
- * @package karmabunny\echoserver
+ * @package karmabunny\visor
  */
 class MockServer extends Server
 {

@@ -1,10 +1,10 @@
 <?php
-namespace karmabunny\echoserver;
+namespace karmabunny\visor;
 
 /**
  * Configure a server instance.
  *
- * @package karmabunny\echoserver
+ * @package karmabunny\visor
  */
 class ServerConfig
 {
