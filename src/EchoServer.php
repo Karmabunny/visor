@@ -22,17 +22,6 @@ class EchoServer extends Server
 
 
     /** @inheritdoc */
-    public function start()
-    {
-        parent::start();
-
-        // Trash the first payload.
-        $path = $this->getWorkingPath() . '/latest.json';
-        @unlink($path);
-    }
-
-
-    /** @inheritdoc */
     public function healthCheck(): bool
     {
         $test_url = $this->getHostUrl() . '/test.json?success=1';
@@ -45,6 +34,11 @@ class EchoServer extends Server
 
         if (!$ok) {
             $this->log(json_encode($test_body));
+        }
+        else {
+            // Trash the testing payload.
+            $path = $this->getWorkingPath() . '/latest.json';
+            @unlink($path);
         }
 
         return $ok;
