@@ -19,7 +19,7 @@ class EchoTest extends TestCase
     {
         if (!self::$server) {
             self::$server = EchoServer::create([
-                'logpath' => dirname(__DIR__) . '/echolog',
+                'path' => dirname(__DIR__) . '/logs/echo',
             ]);
         }
     }
@@ -43,7 +43,7 @@ class EchoTest extends TestCase
         $this->assertEquals('POST', $res['method']);
         $this->assertEquals('application/json', $res['headers']['content-type']);
         $this->assertEquals($query, $res['query']);
-        $this->assertEquals($body, $res['body']);
+        $this->assertEquals($body, json_decode($res['body'], true));
     }
 
 
