@@ -27,10 +27,6 @@ class ServerConfig
      * If your application requires a specific directory it needs to perform
      * a chdir() during its own bootstrap.
      *
-     * If this is NULL, the instance will decide where the the working
-     * directory is located with the {@see Server::getWorkingPath()} method.
-     * By default, this inherits the working directory of the host.
-     *
      * @var string|null
      */
     public $path;

@@ -24,6 +24,8 @@ abstract class Server
     /** @var resource|null */
     protected $process = null;
 
+    /** @var string */
+    protected $server_id;
 
     /**
      * Configure a server instance.
@@ -41,6 +43,7 @@ abstract class Server
         }
 
         $this->config = $config;
+        $this->server_id = uniqid(preg_replace('/[^0-9a-z]+/', '-', static::class));
     }
 
 
@@ -218,7 +221,7 @@ abstract class Server
      */
     public function getWorkingPath(): string
     {
-        return $this->config->path ?: getcwd();
+        return $this->config->path ?: (sys_get_temp_dir() . '/' . $this->server_id);
     }
 
 

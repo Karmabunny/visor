@@ -14,30 +14,10 @@ namespace karmabunny\echoserver;
 class EchoServer extends Server
 {
 
-    /** @var string */
-    public $server_id;
-
-
-    /** @inheritdoc */
-    public function __construct($config = [])
-    {
-        parent::__construct($config);
-
-        $this->server_id = uniqid('echo');
-    }
-
-
     /** @inheritdoc */
     protected function getTargetScript(): string
     {
         return __DIR__ . '/echo.php';
-    }
-
-
-    /** @inheritdoc */
-    public function getWorkingPath(): string
-    {
-        return $this->config->path ?: (sys_get_temp_dir() . '/' . $this->server_id);
     }
 
 
