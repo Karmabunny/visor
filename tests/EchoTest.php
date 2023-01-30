@@ -3,6 +3,8 @@
 use karmabunny\echoserver\EchoServer;
 use PHPUnit\Framework\TestCase;
 
+require_once __DIR__ . '/Http.php';
+
 /**
  * A basic echo test of path + body + headers.
  *
@@ -25,6 +27,14 @@ class EchoTest extends TestCase
     }
 
 
+    public static function tearDownAfterClass(): void
+    {
+        if (self::$server) {
+            self::$server->stop();
+            self::$server = null;
+        }
+    }
+
     public function testEcho()
     {
         $rando1 = sha1(random_bytes(16));
@@ -35,7 +45,7 @@ class EchoTest extends TestCase
         $headers = [ 'content-type' => 'application/json' ];
         $body = [ 'rando2' => $rando2 ];
 
-        self::request($path, $headers, json_encode($body));
+        Http::request($path, $headers, json_encode($body));
 
         $res = self::$server->getLastPayload();
 
@@ -44,36 +54,5 @@ class EchoTest extends TestCase
         $this->assertEquals('application/json', $res['headers']['content-type']);
         $this->assertEquals($query, $res['query']);
         $this->assertEquals($body, json_decode($res['body'], true));
-    }
-
-
-
-    /**
-     * Perform a request.
-     *
-     * @param mixed $url
-     * @param array $headers
-     * @param mixed $body
-     * @return string|false
-     */
-    public static function request(string $url, array $headers = [], $body = null)
-    {
-        $http = [];
-
-        if ($body !== null) {
-            $http['method'] = 'POST';
-            $http['content'] = $body;
-            $http['ignore_errors'] = true;
-        }
-
-        $header = '';
-        foreach ($headers as $name => $value) {
-            $header .= "{$name}: {$value}\r\n";
-        }
-
-        $http['header'] = rtrim($header, "\r\n");
-
-        $context = stream_context_create([ 'http' => $http ]);
-        return @file_get_contents($url, false, $context);
     }
 }
