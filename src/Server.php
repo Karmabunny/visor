@@ -5,7 +5,7 @@ namespace karmabunny\echoserver;
  * A server instance manages the lifecycle of a CLI server script.
  *
  * This does not implement the CLI server itself but instead will create and
- * destory a server instance. This is particularly useful for integration tests,
+ * destroy a server instance. This is particularly useful for integration tests,
  * should your application support the CLI mode server.
  *
  * There are two log files:
@@ -146,8 +146,8 @@ abstract class Server
         $status = proc_get_status($this->process);
 
         if (!$status['running']) {
-            $this->log('Failed to start echo server');
-            throw new \Exception('Failed to start echo server');
+            $this->log('Failed to start server');
+            throw new \Exception('Failed to start server');
         }
 
         $this->log("Server PID: {$status['pid']}");
@@ -161,8 +161,8 @@ abstract class Server
         $ok = $this->healthCheck();
 
         if (!$ok) {
-            $this->log('Failed to connect to echo server');
-            throw new \Exception('Failed to connect to echo server');
+            $this->log('Failed to verify server connection');
+            throw new \Exception('Failed to verify server connection');
         }
     }
 
