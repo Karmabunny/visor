@@ -54,9 +54,9 @@ class EchoServer extends Server
     /**
      * Get the last payload received by the echo server.
      *
-     * @return array
+     * @return array|null
      */
-    public function getLastPayload(): array
+    public function getLastPayload(): ?array
     {
         $path = $this->getWorkingPath() . '/latest.json';
         $payload = file_get_contents($path);
