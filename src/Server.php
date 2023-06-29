@@ -8,9 +8,7 @@ namespace karmabunny\visor;
  * destroy a server instance. This is particularly useful for integration tests,
  * should your application support the CLI mode server.
  *
- * There are two log files:
- * - process.log - created by the host PHP (this file)
- * - server.log - created by the server PHP (the 'target' script)
+ * The log is located in the working directory: `visor.log`
  *
  * For an example implementation, {@see EchoServer} and the `echo.php` script.
  *
@@ -43,7 +41,7 @@ abstract class Server
         }
 
         $this->config = $config;
-        $this->server_id = uniqid(preg_replace('/[^0-9a-z]+/', '-', static::class));
+        $this->server_id = uniqid(strtolower(preg_replace('/[^0-9a-z]+/i', '-', static::class)));
     }
 
 
@@ -115,6 +113,7 @@ abstract class Server
         }
 
         $path = $this->getWorkingPath();
+        $logpath = $this->getLogPath();
 
         if (!is_dir($path)) {
             mkdir($path, 0770, true);
@@ -126,17 +125,17 @@ abstract class Server
         // stdin
         $descriptors[0] = ['pipe', 'r'];
         // stdout
-        $descriptors[1] = ['file', $path . '/process.log', 'a'];
+        $descriptors[1] = ['file', $logpath, 'a'];
         // stderr
-        $descriptors[2] = ['file', $path . '/process.log', 'a'];
+        $descriptors[2] = ['file', $logpath, 'a'];
 
         $cmd = self::escape('exec php -S {addr} {self} test', [
             'addr' => sprintf('%s:%d', $this->config->host, $this->config->port),
             'self' => $target,
         ]);
 
-        $this->log("Executing: {$cmd}");
         $this->log("cwd: {$path}");
+        $this->log("Executing: {$cmd}");
 
         $pipes = [];
         $this->process = proc_open($cmd, $descriptors, $pipes, $path);
@@ -147,7 +146,7 @@ abstract class Server
 
         if (!$status['running']) {
             $this->log('Failed to start server');
-            throw new \Exception('Failed to start server');
+            throw new \Exception("Failed to start server\nView logs at: {$logpath}");
         }
 
         $this->log("Server PID: {$status['pid']}");
@@ -162,7 +161,7 @@ abstract class Server
 
         if (!$ok) {
             $this->log('Failed to verify server connection');
-            throw new \Exception('Failed to verify server connection');
+            throw new \Exception("Failed to verify server connection\nView logs at: {$logpath}");
         }
     }
 
@@ -215,13 +214,24 @@ abstract class Server
     /**
      * Get the working directory for the server script.
      *
-     * This is where log files will be generated.
-     *
      * @return string
      */
     public function getWorkingPath(): string
     {
         return $this->config->path ?: (sys_get_temp_dir() . '/' . $this->server_id);
+    }
+
+
+    /**
+     * Where log files will be written.
+     *
+     * Default: `/tmp/{uniqid}/visor.log`
+     *
+     * @return string
+     */
+    public function getLogPath(): string
+    {
+        return $path = $this->getWorkingPath() . '/visor.log';
     }
 
 
@@ -237,6 +247,18 @@ abstract class Server
 
 
     /**
+     * Return current logs.
+     *
+     * @return string
+     */
+    public function getLogs(): string
+    {
+        $path = $this->getLogPath();
+        return @file_get_contents($path) ?: '';
+    }
+
+
+    /**
      * Log a message to the server log.
      *
      * @param string $message
@@ -244,10 +266,10 @@ abstract class Server
      */
     protected function log(string $message)
     {
-        $path = $this->getWorkingPath();
-        $ts = date('Y-m-d H:i:s');
-        $message = "[{$ts}] {$message}\n";
-        file_put_contents($path . '/server.log', $message, FILE_APPEND);
+        $path = $this->getLogPath();
+        $ts = date('D M d H:i:s Y');
+        $message = "[{$ts}] VISOR: {$message}\n";
+        file_put_contents($path, $message, FILE_APPEND);
     }
 
 
