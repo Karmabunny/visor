@@ -129,7 +129,7 @@ abstract class Server
         // stderr
         $descriptors[2] = ['file', $logpath, 'a'];
 
-        $cmd = self::escape('exec php -S {addr} {self} test', [
+        $cmd = self::escape('exec php -S {addr} {self}', [
             'addr' => sprintf('%s:%d', $this->config->host, $this->config->port),
             'self' => $target,
         ]);
