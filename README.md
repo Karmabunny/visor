@@ -126,13 +126,11 @@ By default the log file path is randomised in a temporary system directory.
 
 ## Log files
 
-The server emit a series of log files to aid testing and debugging.
+The server emit a log file to aid testing and debugging.
 
-Core files:
+This includes logs from the server process, the application, and visor itself.
 
-- `process.log` this is the stdout/stderr of the server process. All request logs and any calls to `error_log()` will appear here.
-
-- `server.log` these are debug points within the host `Server` class itself. Extending classes can emit to the file with the `Server::log()` method.
+Server that extend the base class can use `Server::log()`. Applications can use the native `error_log()`.
 
 
 ### Mock + Echo Server
