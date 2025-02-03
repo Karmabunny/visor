@@ -25,6 +25,9 @@ abstract class Server
     /** @var string */
     protected $server_id;
 
+    /** @var string The CWD on start */
+    protected $cwd;
+
     /**
      * Configure a server instance.
      *
@@ -42,6 +45,7 @@ abstract class Server
 
         $this->config = $config;
         $this->server_id = uniqid(strtolower(preg_replace('/[^0-9a-z]+/i', '-', static::class)));
+        $this->cwd = getcwd();
     }
 
 
@@ -93,6 +97,8 @@ abstract class Server
      */
     public function start()
     {
+        $this->cwd = getcwd();
+
         $target = $this->getTargetScript();
 
         if (!is_file($target)) {
@@ -114,6 +120,7 @@ abstract class Server
 
         $path = $this->getWorkingPath();
         $logpath = $this->getLogPath();
+        $docroot = $this->getDocRootPath();
 
         if (!is_dir($path)) {
             mkdir($path, 0770, true);
@@ -129,8 +136,9 @@ abstract class Server
         // stderr
         $descriptors[2] = ['file', $logpath, 'a'];
 
-        $cmd = self::escape('exec php -S {addr} {self}', [
+        $cmd = self::escape('exec php -S {addr} -t {docroot} {self}', [
             'addr' => sprintf('%s:%d', $this->config->host, $this->config->port),
+            'docroot' => $docroot,
             'self' => $target,
         ]);
 
@@ -214,24 +222,39 @@ abstract class Server
     /**
      * Get the working directory for the server script.
      *
+     * This logs to a temp folder if 'path' is not specified.
+     *
      * @return string
      */
     public function getWorkingPath(): string
     {
-        return $this->config->path ?: (sys_get_temp_dir() . '/' . $this->server_id);
+        return rtrim($this->config->path ?: (sys_get_temp_dir() . '/' . $this->server_id), '/');
+    }
+
+
+    /**
+     * Get the docroot where to serve files from.
+     *
+     * This the working directory if 'docroot' is not specified.
+     *
+     * @return string
+     */
+    public function getDocRootPath(): string
+    {
+        return rtrim($this->config->docroot ?: $this->cwd, '/');
     }
 
 
     /**
      * Where log files will be written.
      *
-     * Default: `/tmp/{uniqid}/visor.log`
+     * Defaults to the working path if 'path' is not configured.
      *
      * @return string
      */
     public function getLogPath(): string
     {
-        return $path = $this->getWorkingPath() . '/visor.log';
+        return $this->getWorkingPath() . '/visor.log';
     }
 
 

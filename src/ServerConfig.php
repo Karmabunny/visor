@@ -31,6 +31,13 @@ class ServerConfig
      */
     public $path;
 
+    /**
+     * Where to serve files from.
+     *
+     * @var string|null
+     */
+    public $docroot;
+
 
     /**
      * Create a configuration object.
