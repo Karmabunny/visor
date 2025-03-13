@@ -61,6 +61,17 @@ abstract class Server
         }
     }
 
+    /**
+     * Update the server configuration.
+     *
+     * @param array $config
+     * @return void
+     */
+    public function update(array $config)
+    {
+        $this->config = new ServerConfig($config);
+    }
+
 
     /**
      * Configure and start a server.
@@ -71,7 +82,9 @@ abstract class Server
      */
     public static function create($config = [])
     {
-        $server = new static($config);
+        // @phpstan-ignore-next-line: gotta do what we gotta do.
+        $server = new static;
+        $server->update($config);
         $server->start();
         return $server;
     }
