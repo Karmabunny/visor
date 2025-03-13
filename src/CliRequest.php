@@ -69,7 +69,7 @@ class CliRequest
             $body = null;
         }
 
-        return new static(compact('path', 'query', 'method', 'headers', 'body'));
+        return new self(compact('path', 'query', 'method', 'headers', 'body'));
     }
 
 
