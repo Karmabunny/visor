@@ -13,6 +13,6 @@
         "phpunit/phpunit": "^9.5"
     },
     "scripts": {
-        "test": "phpunit --testdox tests"
+        "test": "phpunit --testdox --configuration phpunit.xml"
     }
 }
