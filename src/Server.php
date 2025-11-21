@@ -134,6 +134,7 @@ abstract class Server
         $path = $this->getWorkingPath();
         $logpath = $this->getLogPath();
         $docroot = $this->getDocRootPath();
+        $vendor = $this->getVendorPath();
 
         if (!is_dir($path)) {
             mkdir($path, 0770, true);
@@ -156,10 +157,13 @@ abstract class Server
         ]);
 
         $this->log("cwd: {$path}");
+        $this->log("vendor: {$vendor}");
         $this->log("Executing: {$cmd}");
 
         $pipes = [];
-        $this->process = proc_open($cmd, $descriptors, $pipes, $path);
+        $this->process = proc_open($cmd, $descriptors, $pipes, $path, [
+            'VENDOR_PATH' => $vendor,
+        ]);
 
         // Check it.
         usleep($this->config->wait * 1000);
@@ -268,6 +272,31 @@ abstract class Server
     public function getLogPath(): string
     {
         return $this->getWorkingPath() . '/visor.log';
+    }
+
+
+    /**
+     * Where the vendor directory is located.
+     *
+     * This is provided to the server script so it can load its own dependencies.
+     *
+     * @return string
+     * @throws \Exception
+     */
+    public function getVendorPath(): string
+    {
+        $level = 1;
+        for (;;) {
+            $dir = dirname(__DIR__, $level++);
+
+            if ($dir == '/') {
+                throw new \Exception('Unable to find vendor directory');
+            }
+
+            if (is_dir($dir . '/vendor')) {
+                return $dir . '/vendor';
+            }
+        }
     }
 
 

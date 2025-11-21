@@ -1,5 +1,7 @@
 <?php
 
+namespace karmabunny\visor;
+
 /**
  *
  * @package karmabunny/echoserver
@@ -31,7 +33,7 @@ class CliRequest
     }
 
 
-    public static function create()
+    public static function create(bool $log = true): self
     {
         // Path.
         [$path, $query_string] = explode('?', $_SERVER['REQUEST_URI'], 2) + [null, null];
@@ -69,7 +71,13 @@ class CliRequest
             $body = null;
         }
 
-        return new self(compact('path', 'query', 'method', 'headers', 'body'));
+        $request = new self(compact('path', 'query', 'method', 'headers', 'body'));
+
+        if ($log) {
+            error_log("[{$request->method}] {$request->path}");
+        }
+
+        return $request;
     }
 
 
