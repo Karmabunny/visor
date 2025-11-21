@@ -78,7 +78,7 @@ abstract class Server
      *
      * @param array|ServerConfig $config
      * @return static
-     * @throws \Exception
+     * @throws VisorException
      */
     public static function create($config = [])
     {
@@ -106,7 +106,7 @@ abstract class Server
      * This does nothing if the server is already running.
      *
      * @return void
-     * @throws \Exception
+     * @throws VisorException
      */
     public function start()
     {
@@ -115,7 +115,7 @@ abstract class Server
         $target = $this->getTargetScript();
 
         if (!is_file($target)) {
-            throw new \Exception("Server target doesn't exist: '{$target}'");
+            throw new VisorException("Server target doesn't exist: '{$target}'");
         }
 
         if ($this->process) {
@@ -171,7 +171,7 @@ abstract class Server
 
         if (!$status['running']) {
             $this->log('Failed to start server');
-            throw new \Exception("Failed to start server\nView logs at: {$logpath}");
+            throw new VisorException("Failed to start server\nView logs at: {$logpath}");
         }
 
         $this->log("Server PID: {$status['pid']}");
@@ -186,7 +186,7 @@ abstract class Server
 
         if (!$ok) {
             $this->log('Failed to verify server connection');
-            throw new \Exception("Failed to verify server connection\nView logs at: {$logpath}");
+            throw new VisorException("Failed to verify server connection\nView logs at: {$logpath}");
         }
     }
 
@@ -281,7 +281,7 @@ abstract class Server
      * This is provided to the server script so it can load its own dependencies.
      *
      * @return string
-     * @throws \Exception
+     * @throws VisorException
      */
     public function getVendorPath(): string
     {
@@ -295,7 +295,7 @@ abstract class Server
             $path = dirname($path);
 
             if ($path == '/') {
-                throw new \Exception('Unable to find vendor directory');
+                throw new VisorException('Unable to find vendor directory');
             }
         }
     }
