@@ -22,7 +22,7 @@ class MockTest extends TestCase
         if (!self::$server) {
             self::$server = MockServer::create([
                 'path' => dirname(__DIR__) . '/logs/mock',
-                'port' => 8081,
+                'port' => 5631,
             ]);
         }
     }

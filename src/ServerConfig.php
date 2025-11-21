@@ -12,8 +12,15 @@ class ServerConfig
     /** @var string */
     public $host = 'localhost';
 
-    /** @var int */
-    public $port = 8080;
+    /**
+     * ```
+     * array_sum(array_map(fn($c) => ord($c), str_split('visor'))) * 10
+     * // => 5630
+     * ```
+     *
+     * @var int
+     */
+    public $port = 5630;
 
     /** @var int milliseconds */
     public $wait = 100;
