@@ -285,16 +285,17 @@ abstract class Server
      */
     public function getVendorPath(): string
     {
-        $level = 1;
-        for (;;) {
-            $dir = dirname(__DIR__, $level++);
+        $path = $this->getDocRootPath();
 
-            if ($dir == '/') {
-                throw new \Exception('Unable to find vendor directory');
+        for (;;) {
+            if (is_dir($path . '/vendor')) {
+                return $path . '/vendor';
             }
 
-            if (is_dir($dir . '/vendor')) {
-                return $dir . '/vendor';
+            $path = dirname($path);
+
+            if ($path == '/') {
+                throw new \Exception('Unable to find vendor directory');
             }
         }
     }
