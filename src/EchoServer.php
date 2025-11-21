@@ -28,7 +28,7 @@ class EchoServer extends Server
         $this->log("testing: {$test_url}");
 
         $test_body = @file_get_contents($test_url);
-        $test_body = json_decode($test_body, true);
+        $test_body = json_decode($test_body ?: '[]', true);
 
         $ok = !empty($test_body['query']['success']);
 
@@ -53,8 +53,8 @@ class EchoServer extends Server
     public function getLastPayload(): ?array
     {
         $path = $this->getWorkingPath() . '/latest.json';
-        $payload = file_get_contents($path);
-        $payload = json_decode($payload, true);
+        $payload = @file_get_contents($path);
+        $payload = json_decode($payload ?: 'null', true);
         return $payload;
     }
 }

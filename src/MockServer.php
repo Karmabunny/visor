@@ -28,8 +28,8 @@ class MockServer extends Server
     public function getLastPayload(): ?array
     {
         $path = $this->getWorkingPath() . '/latest.json';
-        $payload = file_get_contents($path);
-        $payload = json_decode($payload, true);
+        $payload = @file_get_contents($path);
+        $payload = json_decode($payload ?: 'null', true);
         return $payload;
     }
 
@@ -71,7 +71,7 @@ class MockServer extends Server
         $test_url = $this->getHostUrl() . $path;
         $this->log("testing: {$test_url}");
 
-        $actual_res = file_get_contents($test_url . '?success=' . $rando2);
+        $actual_res = @file_get_contents($test_url . '?success=' . $rando2);
         $actual_req = $this->getLastPayload();
 
         $ok = (
