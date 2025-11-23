@@ -57,6 +57,15 @@ abstract class Server implements ConfigurableInitInterface
 
 
     /** @inheritdoc */
+    public function __serialize(): array
+    {
+        $vars = get_object_vars($this);
+        unset($vars['process']);
+        return $vars;
+    }
+
+
+    /** @inheritdoc */
     public function init(): void
     {
     }
@@ -137,10 +146,13 @@ abstract class Server implements ConfigurableInitInterface
         $logpath = $this->getLogPath();
         $docroot = $this->getDocRootPath();
         $vendor = $this->getVendorPath();
+        $binary = $this->getBinaryPath();
 
         if (!is_dir($path)) {
             mkdir($path, 0770, true);
         }
+
+        file_put_contents($binary, serialize($this));
 
         $this->log('--------------------');
 
@@ -165,6 +177,8 @@ abstract class Server implements ConfigurableInitInterface
         $pipes = [];
         $this->process = proc_open($cmd, $descriptors, $pipes, $path, [
             'VENDOR_PATH' => $vendor,
+            'VISOR_CLASS' => static::class,
+            'VISOR_BINARY' => $binary,
         ]);
 
         // Check it.
@@ -274,6 +288,19 @@ abstract class Server implements ConfigurableInitInterface
     public function getLogPath(): string
     {
         return $this->getWorkingPath() . '/visor.log';
+    }
+
+
+    /**
+     * Where the server binary is written.
+     *
+     * This is used to store the server state and configuration.
+     *
+     * @return string
+     */
+    public function getBinaryPath(): string
+    {
+        return $this->getWorkingPath() . '/visor.bin';
     }
 
 
