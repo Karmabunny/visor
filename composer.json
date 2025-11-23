@@ -16,5 +16,8 @@
     "scripts": {
         "analyse": "phpstan analyse -c phpstan.neon",
         "test": "phpunit --testdox --configuration phpunit.xml"
+    },
+    "require": {
+        "karmabunny/interfaces": "^1.0"
     }
 }
