@@ -1,6 +1,7 @@
 <?php
 namespace karmabunny\visor;
 
+use karmabunny\interfaces\ConfigurableInitInterface;
 use karmabunny\visor\errors\VisorException;
 
 /**
@@ -16,7 +17,7 @@ use karmabunny\visor\errors\VisorException;
  *
  * @package karmabunny\visor
  */
-abstract class Server
+abstract class Server implements ConfigurableInitInterface
 {
     /** @var ServerConfig */
     public $config;
@@ -30,32 +31,23 @@ abstract class Server
     /** @var string The CWD on start */
     protected $cwd;
 
+
     /**
      * Configure a server instance.
      *
      * This _does not_ start the server instance.
      *
      * Use {@see start()} method or the {@see create()}` shorthand.
-     *
-     * @param array|ServerConfig $config
      */
-    public function __construct($config = [])
+    public function __construct()
     {
-        if (is_array($config)) {
-            $config = new ServerConfig($config);
-        }
-
-        $this->config = $config;
-        $this->server_id = uniqid(strtolower(preg_replace('/[^0-9a-z]+/i', '-', static::class)));
+        $this->config = new ServerConfig();
+        $this->server_id = static::generateServerId();
         $this->cwd = getcwd();
     }
 
 
-    /**
-     * If 'autostop' is configured, destroy the server instance.
-     *
-     * @return void
-     */
+    /** @inheritdoc */
     public function __destruct()
     {
         if ($this->config->autostop) {
@@ -63,15 +55,17 @@ abstract class Server
         }
     }
 
-    /**
-     * Update the server configuration.
-     *
-     * @param array $config
-     * @return void
-     */
-    public function update(array $config)
+
+    /** @inheritdoc */
+    public function init(): void
     {
-        $this->config = new ServerConfig($config);
+    }
+
+
+    /** @inheritdoc */
+    public function update($config)
+    {
+        $this->config->update($config);
     }
 
 
@@ -112,6 +106,12 @@ abstract class Server
      */
     public function start()
     {
+        if (PHP_SAPI === 'cli-server') {
+            throw new VisorException('Cannot start server in cli-server mode');
+        }
+
+        $this->init();
+
         $this->cwd = getcwd();
 
         $target = $this->getTargetScript();
@@ -356,5 +356,11 @@ abstract class Server
             $index = $matches[1];
             return escapeshellarg($args[$index] ?? '');
         }, $cmd);
+    }
+
+
+    protected static function generateServerId(): string
+    {
+        return uniqid(strtolower(preg_replace('/[^0-9a-z]+/i', '-', static::class)));
     }
 }

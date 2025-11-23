@@ -1,12 +1,14 @@
 <?php
 namespace karmabunny\visor;
 
+use karmabunny\interfaces\ConfigurableInterface;
+
 /**
  * Configure a server instance.
  *
  * @package karmabunny\visor
  */
-class ServerConfig
+class ServerConfig implements ConfigurableInterface
 {
 
     /** @var string */
@@ -52,6 +54,13 @@ class ServerConfig
      * @param array $config
      */
     public function __construct($config = [])
+    {
+        $this->update($config);
+    }
+
+
+    /** @inheritdoc */
+    public function update($config)
     {
         foreach ($config as $key => $value) {
             if (!property_exists($this, $key)) continue;
