@@ -36,7 +36,7 @@ class CliRequest
     public static function create(bool $log = true): self
     {
         // Path.
-        [$path, $query_string] = explode('?', $_SERVER['REQUEST_URI'], 2) + [null, null];
+        [$path, $query_string] = explode('?', $_SERVER['REQUEST_URI'], 2) + ['', ''];
 
         // Method.
         $method = strtoupper(@$_SERVER['REQUEST_METHOD'] ?: 'GET');
