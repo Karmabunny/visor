@@ -1,5 +1,5 @@
 <?php
-namespace karmabunny\visor;
+namespace karmabunny\visor\errors;
 
 /**
  * A custom exception for Visor.

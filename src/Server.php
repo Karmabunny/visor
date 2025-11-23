@@ -1,6 +1,8 @@
 <?php
 namespace karmabunny\visor;
 
+use karmabunny\visor\errors\VisorException;
+
 /**
  * A server instance manages the lifecycle of a CLI server script.
  *
