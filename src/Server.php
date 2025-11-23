@@ -359,7 +359,7 @@ abstract class Server implements ConfigurableInitInterface
      * @param string $message
      * @return void
      */
-    protected function log(string $message)
+    public function log(string $message)
     {
         $path = $this->getLogPath();
         $ts = date('D M d H:i:s Y');
@@ -371,13 +371,15 @@ abstract class Server implements ConfigurableInitInterface
     /**
      * Escape args in a CLI string.
      *
-     * This is ripped from karmabunny/php.
+     * Like `cmd -x {arg1} {arg2}` to correspond to the key of the args array.
+     *
+     * This is ripped from karmabunny/kb.
      *
      * @param string $cmd
      * @param array $args
      * @return string
      */
-    protected static function escape(string $cmd, array $args): string
+    public static function escape(string $cmd, array $args): string
     {
         return preg_replace_callback('/{([^}]+)}/', function($matches) use ($args) {
             $index = $matches[1];
