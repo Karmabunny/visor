@@ -44,7 +44,7 @@ class RouterServer extends Server
     }
 
 
-    protected function loadControllers(string $path): array
+    public function loadControllers(string $path): array
     {
         $files = scandir($path);
 
