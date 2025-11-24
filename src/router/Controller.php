@@ -82,7 +82,7 @@ abstract class Controller
      * @param ResponseInterface $response
      * @return void
      */
-    public function send(ResponseInterface $response)
+    public static function send(ResponseInterface $response)
     {
         $version = $response->getProtocolVersion();
         $reason = $response->getReasonPhrase();
