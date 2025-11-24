@@ -119,6 +119,10 @@ abstract class Server implements ConfigurableInitInterface
             throw new VisorException('Cannot start server in cli-server mode');
         }
 
+        if ($this->isRunning()) {
+            return;
+        }
+
         $this->init();
 
         $this->cwd = getcwd();
@@ -129,68 +133,21 @@ abstract class Server implements ConfigurableInitInterface
             throw new VisorException("Server target doesn't exist: '{$target}'");
         }
 
-        if ($this->process) {
-            $status = proc_get_status($this->process);
-
-            // Quit early.
-            if ($status['running']) {
-                return;
-            }
-            // Otherwise tidy-up.
-            else {
-                $this->process = null;
-            }
-        }
-
         $path = $this->getWorkingPath();
-        $logpath = $this->getLogPath();
-        $docroot = $this->getDocRootPath();
         $vendor = $this->getVendorPath();
-        $binary = $this->getBinaryPath();
+        $logpath = $this->getLogPath();
 
         if (!is_dir($path)) {
             mkdir($path, 0770, true);
         }
 
-        file_put_contents($binary, serialize($this));
-
         $this->log('--------------------');
-
-        $descriptors = [];
-        // stdin
-        $descriptors[0] = ['pipe', 'r'];
-        // stdout
-        $descriptors[1] = ['file', $logpath, 'a'];
-        // stderr
-        $descriptors[2] = ['file', $logpath, 'a'];
-
-        $cmd = self::escape('exec php -S {addr} -t {docroot} {self}', [
-            'addr' => sprintf('%s:%d', $this->config->host, $this->config->port),
-            'docroot' => $docroot,
-            'self' => $target,
-        ]);
 
         $this->log("cwd: {$path}");
         $this->log("vendor: {$vendor}");
-        $this->log("Executing: {$cmd}");
 
-        $pipes = [];
-        $this->process = proc_open($cmd, $descriptors, $pipes, $path, [
-            'VENDOR_PATH' => $vendor,
-            'VISOR_CLASS' => static::class,
-            'VISOR_BINARY' => $binary,
-        ]);
-
-        // Check it.
-        usleep($this->config->wait * 1000);
-        $status = proc_get_status($this->process);
-
-        if (!$status['running']) {
-            $this->log('Failed to start server');
-            throw new VisorException("Failed to start server\nView logs at: {$logpath}");
-        }
-
-        $this->log("Server PID: {$status['pid']}");
+        $this->writeBinary();
+        $this->internalStart();
 
         // Tidy up later.
         if ($this->config->autostop) {
@@ -204,19 +161,6 @@ abstract class Server implements ConfigurableInitInterface
             $this->log('Failed to verify server connection');
             throw new VisorException("Failed to verify server connection\nView logs at: {$logpath}");
         }
-    }
-
-
-    /**
-     * Perform a healthcheck on this server.
-     *
-     * This is server-specific, the default implementation is a stub.
-     *
-     * @return bool
-     */
-    public function healthCheck(): bool
-    {
-        return true;
     }
 
 
@@ -248,6 +192,143 @@ abstract class Server implements ConfigurableInitInterface
         }
 
         $this->process = null;
+        return true;
+    }
+
+
+    /**
+     * Reload the server.
+     *
+     * This will stop the server and start it again.
+     *
+     * @return void
+     */
+    public function reload()
+    {
+        $this->stop();
+        $this->writeBinary();
+        $this->internalStart();
+    }
+
+
+    /**
+     * Check if the server is running.
+     *
+     * @return bool
+     */
+    public function isRunning(): bool
+    {
+        if (!$this->process) {
+            return false;
+        }
+
+        $status = proc_get_status($this->process);
+        return (bool) $status['running'];
+    }
+
+
+    /**
+     * Get the command to start the server.
+     *
+     * @return string
+     */
+    protected function getCommand(): string
+    {
+        $docroot = $this->getDocRootPath();
+        $target = $this->getTargetScript();
+
+        return self::escape('exec php -S {addr} -t {docroot} {self}', [
+            'addr' => sprintf('%s:%d', $this->config->host, $this->config->port),
+            'docroot' => $docroot,
+            'self' => $target,
+        ]);
+    }
+
+
+    /**
+     * Start the server.
+     *
+     * This is the internal implementation of the server start.
+     *
+     * No validation, no healthcheck, etc.
+     *
+     * @return void
+     */
+    protected function internalStart()
+    {
+        $path = $this->getWorkingPath();
+        $logpath = $this->getLogPath();
+        $vendor = $this->getVendorPath();
+        $binary = $this->getBinaryPath();
+
+        $cmd = $this->getCommand();
+        $this->log("Executing: {$cmd}");
+
+        $descriptors = [];
+        // stdin
+        $descriptors[0] = ['pipe', 'r'];
+        // stdout
+        $descriptors[1] = ['file', $logpath, 'a'];
+        // stderr
+        $descriptors[2] = ['file', $logpath, 'a'];
+
+
+        $pipes = [];
+        $this->process = proc_open($cmd, $descriptors, $pipes, $path, [
+            'VENDOR_PATH' => $vendor,
+            'VISOR_CLASS' => static::class,
+            'VISOR_BINARY' => $binary,
+        ]);
+
+        // Check it.
+        usleep($this->config->wait * 1000);
+        $status = proc_get_status($this->process);
+
+        if (!$status['running']) {
+            $this->log('Failed to start server');
+            throw new VisorException("Failed to start server\nView logs at: {$logpath}");
+        }
+
+        $this->log("Server PID: {$status['pid']}");
+    }
+
+
+    /**
+     * Write the server binary.
+     *
+     * This is used to pass the server state to the child process.
+     *
+     * @return void
+     */
+    protected function writeBinary()
+    {
+        $binary = $this->getBinaryPath();
+        file_put_contents($binary, serialize($this));
+    }
+
+
+    /**
+     * Get the server ID.
+     *
+     * This is a unique identifier for the server instance.
+     *
+     * @return string
+     */
+    public function getServerId(): string
+    {
+        return $this->server_id;
+    }
+
+
+    /**
+     * Perform a healthcheck on this server.
+     *
+     * This is server-specific, the default implementation is a stub.
+     *
+     * @return bool
+     */
+    public function healthCheck(): bool
+    {
         return true;
     }
 
