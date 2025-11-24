@@ -16,9 +16,13 @@ class RouterServer extends Server
     public $routes = [];
 
 
-    public function __construct($config = [])
+    public function init(): void
     {
-        parent::__construct($config);
+        parent::init();
+
+        if ($this->config->path and is_dir($this->config->path . '/controllers')) {
+            $this->loadControllers($this->config->path . '/controllers');
+        }
     }
 
 
