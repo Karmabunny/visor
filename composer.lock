@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4af71ba6e06f3b82fe7666e073726b40",
+    "content-hash": "54ecebd266252c7b1ffe5ded87111ec5",
     "packages": [
         {
             "name": "karmabunny/interfaces",
@@ -59,21 +59,21 @@
         },
         {
             "name": "karmabunny/router",
-            "version": "v2.7.14",
+            "version": "v2.7.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Karmabunny/kbrouter.git",
-                "reference": "e420587f5abd9db62887a9b509d0cf38b4a81b0c"
+                "reference": "ca4e9e38619d4c80450b10f480fa08ae9cbbacf1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Karmabunny/kbrouter/zipball/e420587f5abd9db62887a9b509d0cf38b4a81b0c",
-                "reference": "e420587f5abd9db62887a9b509d0cf38b4a81b0c",
+                "url": "https://api.github.com/repos/Karmabunny/kbrouter/zipball/ca4e9e38619d4c80450b10f480fa08ae9cbbacf1",
+                "reference": "ca4e9e38619d4c80450b10f480fa08ae9cbbacf1",
                 "shasum": ""
             },
             "require-dev": {
                 "phpcompatibility/php-compatibility": "^9.3",
-                "phpstan/phpstan": "^0.12.88",
+                "phpstan/phpstan": "^1",
                 "phpunit/phpunit": "^9.5"
             },
             "type": "library",
@@ -99,9 +99,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Karmabunny/kbrouter/issues",
-                "source": "https://github.com/Karmabunny/kbrouter/tree/v2.7.14"
+                "source": "https://github.com/Karmabunny/kbrouter/tree/v2.7.16"
             },
-            "time": "2023-01-31T06:39:42+00:00"
+            "time": "2025-11-24T00:31:30+00:00"
         },
         {
             "name": "nyholm/psr7",
