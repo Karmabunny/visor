@@ -13,6 +13,8 @@ class RouterServer extends Server
 
     protected $controllers = [];
 
+    protected $controller_files = [];
+
     public $routes = [];
 
 
@@ -44,6 +46,13 @@ class RouterServer extends Server
     public function getRoutes(): array
     {
         $routes = array_merge($this->routes, $this->controllers);
+
+        foreach ($this->controller_files as $file) {
+            (static function($_file) {
+                require_once $_file;
+            })($file);
+        }
+
         return $routes;
     }
 
@@ -61,19 +70,25 @@ class RouterServer extends Server
             $content = file_get_contents($file);
             $matches = [];
 
-            $PATTERN = '/
-                (?:namespace\s+([^\s]+)\s*;)|
-                (?:class\s+([^\s]+)\s+extends\s+Controller)
-            /xi';
-
-            if (!preg_match_all($PATTERN, $content, $matches, PREG_SET_ORDER)) {
+            $matches = [];
+            if (!preg_match('/class\s+([^\s]+)\s+extends\s+Controller/', $content, $matches)) {
                 continue;
             }
 
-            $namespace = $matches[0][1] ?? '';
-            $class = $matches[1][2] ?? '';
+            [, $class] = $matches;
 
-            $class = ($namespace ? $namespace . '\\' : '') . $class;
+            $matches = [];
+            if (preg_match('/namespace\s+([^\s]+)\s*;/', $content, $matches)) {
+                [, $namespace] = $matches;
+                $class = $namespace . '\\' . $class;
+            }
+            else {
+                $this->controller_files[] = $file;
+
+                (static function($_file) {
+                    require_once $_file;
+                })($file);
+            }
 
             if (!is_subclass_of($class, Controller::class, true)) {
                 continue;
