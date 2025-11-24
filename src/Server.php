@@ -194,7 +194,7 @@ abstract class Server implements ConfigurableInitInterface
         proc_close($this->process);
 
         if (!empty($status['pid'])) {
-            posix_kill($status['pid'], SIGKILL);
+            posix_kill($status['pid'], 9);
         }
 
         $this->process = null;
