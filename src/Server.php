@@ -243,7 +243,8 @@ abstract class Server implements ConfigurableInitInterface
         $docroot = $this->getDocRootPath();
         $target = $this->getTargetScript();
 
-        return self::escape('exec php -S {addr} -t {docroot} {self}', [
+        return self::escape('exec {php} -S {addr} -t {docroot} {self}', [
+            'php' => PHP_BINARY,
             'addr' => sprintf('%s:%d', $this->config->host, $this->config->port),
             'docroot' => $docroot,
             'self' => $target,
