@@ -1,6 +1,6 @@
 <?php
 
-use karmabunny\visor\MockServer;
+use karmabunny\visor\mock\MockServer;
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/Http.php';

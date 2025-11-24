@@ -1,5 +1,7 @@
 <?php
-namespace karmabunny\visor;
+namespace karmabunny\visor\mock;
+
+use karmabunny\visor\Server;
 
 /**
  * A mock server that can return templated responses.

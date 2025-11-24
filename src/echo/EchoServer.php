@@ -1,5 +1,7 @@
 <?php
-namespace karmabunny\visor;
+namespace karmabunny\visor\echo;
+
+use karmabunny\visor\Server;
 
 /**
  * A server instance that echos whatever is given to it.
