@@ -141,6 +141,10 @@ abstract class Server implements ConfigurableInitInterface
             mkdir($path, 0770, true);
         }
 
+        if (getenv('CI')) {
+            file_put_contents($logpath, '');
+        }
+
         $this->log('--------------------');
 
         $this->log("cwd: {$path}");
