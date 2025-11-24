@@ -159,7 +159,9 @@ abstract class Server implements ConfigurableInitInterface
 
         if (!$ok) {
             $this->log('Failed to verify server connection');
-            throw new VisorException("Failed to verify server connection\nView logs at: {$logpath}");
+
+            $logs = getenv('CI') ? $this->getLogs() : "View logs at: {$logpath}";
+            throw new VisorException("Failed to verify server connection\n" . $logs);
         }
     }
 
@@ -286,7 +288,9 @@ abstract class Server implements ConfigurableInitInterface
 
         if (!$status['running']) {
             $this->log('Failed to start server');
-            throw new VisorException("Failed to start server\nView logs at: {$logpath}");
+
+            $logs = getenv('CI') ? $this->getLogs() : "View logs at: {$logpath}";
+            throw new VisorException("Failed to start server\n" . $logs);
         }
 
         $this->log("Server PID: {$status['pid']}");
