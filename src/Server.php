@@ -36,6 +36,9 @@ abstract class Server implements ConfigurableInitInterface
     /** @var DateTimeZone OS timezone */
     protected $timezone;
 
+    /** @var int */
+    protected $port_index = 0;
+
     /**
      * Configure a server instance.
      *
@@ -158,7 +161,14 @@ abstract class Server implements ConfigurableInitInterface
         $this->log("vendor: {$vendor}");
 
         $this->writeBinary();
-        $this->internalStart();
+
+        while ($this->getPort()) {
+            if ($this->internalStart()) {
+                break;
+            }
+
+            $this->writeBinary();
+        }
 
         // Tidy up later.
         if ($this->config->autostop) {
@@ -240,6 +250,19 @@ abstract class Server implements ConfigurableInitInterface
     }
 
 
+    protected function getNextPort(): ?int
+    {
+        $ports = (array) $this->config->port;
+        $port = $ports[$this->port_index] ?? null;
+
+        if ($port) {
+            $this->port_index++;
+        }
+
+        return $port;
+    }
+
+
     /**
      * Get the command to start the server.
      *
@@ -250,9 +273,13 @@ abstract class Server implements ConfigurableInitInterface
         $docroot = $this->getDocRootPath();
         $target = $this->getTargetScript();
 
+        if (!($port = $this->getPort())) {
+            throw new VisorException('No port available');
+        }
+
         return self::escape('exec {php} -S {addr} -t {docroot} {self}', [
             'php' => PHP_BINARY,
-            'addr' => sprintf('%s:%d', $this->config->host, $this->config->port),
+            'addr' => sprintf('%s:%d', $this->config->host, $port),
             'docroot' => $docroot,
             'self' => $target,
         ]);
@@ -266,14 +293,18 @@ abstract class Server implements ConfigurableInitInterface
      *
      * No validation, no healthcheck, etc.
      *
-     * @return void
+     * @return bool
      */
-    protected function internalStart()
+    protected function internalStart(): bool
     {
         $path = $this->getWorkingPath();
         $logpath = $this->getLogPath();
         $vendor = $this->getVendorPath();
         $binary = $this->getBinaryPath();
+
+        if ($this->process) {
+            throw new VisorException('Process already exists');
+        }
 
         $cmd = $this->getCommand();
         $this->log("Executing: {$cmd}");
@@ -297,15 +328,23 @@ abstract class Server implements ConfigurableInitInterface
         // Check it.
         usleep($this->config->wait * 1000);
         $status = proc_get_status($this->process);
+        $running = (bool) $status['running'];
 
-        if (!$status['running']) {
-            $this->log('Failed to start server');
+        if ($running) {
+            $this->log("Server PID: {$status['pid']}");
+        }
+        else {
+            $this->process = null;
+        }
+
+        if (!$running and $this->getNextPort() === null) {
+            $this->log('Failed to start server, exit code: ' . $status['exitcode']);
 
             $logs = getenv('CI') ? $this->getLogs() : "View logs at: {$logpath}";
             throw new VisorException("Failed to start server\n" . $logs);
         }
 
-        $this->log("Server PID: {$status['pid']}");
+        return $running;
     }
 
 
@@ -428,13 +467,25 @@ abstract class Server implements ConfigurableInitInterface
 
 
     /**
+     * Get the current port number.
+     *
+     * @return int
+     */
+    public function getPort(): int
+    {
+        $ports = (array) $this->config->port;
+        return $ports[$this->port_index] ?? 0;
+    }
+
+
+    /**
      * Get the host URL (including the schema + port number) of the server.
      *
      * @return string
      */
     public function getHostUrl(): string
     {
-        return "http://{$this->config->host}:{$this->config->port}";
+        return "http://{$this->config->host}:{$this->getPort()}";
     }
 
 

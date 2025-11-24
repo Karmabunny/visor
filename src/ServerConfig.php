@@ -20,9 +20,9 @@ class ServerConfig implements ConfigurableInterface
      * // => 5630
      * ```
      *
-     * @var int
+     * @var int|int[]
      */
-    public $port = 5630;
+    public $port = [5630, 5631, 5632, 5633, 5634];
 
     /** @var int milliseconds */
     public $wait = 100;
