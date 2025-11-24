@@ -31,7 +31,9 @@ class RouterServer extends Server
     /** @inheritdoc */
     public function healthCheck(): bool
     {
-        $res = @file_get_contents($this->getHostUrl() . '/_healthcheck');
+        $url = $this->getHostUrl() . '/_healthcheck';
+        $res = @file_get_contents($url);
+        $this->log("Healthcheck: ({$url}) '{$res}'");
         return $res === $this->server_id;
     }
 
