@@ -1,6 +1,8 @@
 <?php
 namespace karmabunny\visor;
 
+use DateTimeImmutable;
+use DateTimeZone;
 use karmabunny\interfaces\ConfigurableInitInterface;
 use karmabunny\visor\errors\VisorException;
 
@@ -31,6 +33,8 @@ abstract class Server implements ConfigurableInitInterface
     /** @var string The CWD on start */
     protected $cwd;
 
+    /** @var DateTimeZone OS timezone */
+    protected $timezone;
 
     /**
      * Configure a server instance.
@@ -44,6 +48,9 @@ abstract class Server implements ConfigurableInitInterface
         $this->config = new ServerConfig();
         $this->server_id = static::generateServerId();
         $this->cwd = getcwd();
+
+        $tz = trim(@file_get_contents('/etc/timezone') ?: date_default_timezone_get());
+        $this->timezone = new DateTimeZone($tz);
     }
 
 
@@ -452,8 +459,8 @@ abstract class Server implements ConfigurableInitInterface
     public function log(string $message)
     {
         $path = $this->getLogPath();
-        $ts = date('D M d H:i:s Y');
-        $message = "[{$ts}] VISOR: {$message}\n";
+        $ts = new DateTimeImmutable('now', $this->timezone);
+        $message = "[{$ts->format('D M d H:i:s Y')}] VISOR: {$message}\n";
         file_put_contents($path, $message, FILE_APPEND);
     }
 
