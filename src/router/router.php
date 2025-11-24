@@ -31,6 +31,10 @@ $router = Router::create([
     'mode' => Router::MODE_SINGLE,
 ]);
 
+$router->load(['/_healthcheck' => function() use ($server) {
+    return $server->getServerId();
+}]);
+
 $router->load($server->getRoutes());
 
 try {
