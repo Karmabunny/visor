@@ -47,8 +47,10 @@ try {
     }
 
     if ($action->isController(Controller::class)) {
-        /** @var Controller $controller */
-        $controller = new ($action->target[0])();
+        /** @var class-string<Controller> */
+        $class = $action->target[0];
+
+        $controller = new $class();
         $controller->server = $server;
         $controller->request = $request;
         $controller->response = new Response();
