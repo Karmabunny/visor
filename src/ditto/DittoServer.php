@@ -1,5 +1,5 @@
 <?php
-namespace karmabunny\visor\echo;
+namespace karmabunny\visor\ditto;
 
 use karmabunny\visor\Server;
 
@@ -9,17 +9,17 @@ use karmabunny\visor\Server;
  * The most recent payload is available for inspection with
  * the `getLastPayload()` method.
  *
- * The server implementation is located aside this class, named `echo.php`.
+ * The server implementation is located aside this class, named `ditto.php`.
  *
  * @package karmabunny\visor
  */
-class EchoServer extends Server
+class DittoServer extends Server
 {
 
     /** @inheritdoc */
     protected function getTargetScript(): string
     {
-        return __DIR__ . '/echo.php';
+        return __DIR__ . '/ditto.php';
     }
 
 
@@ -48,7 +48,7 @@ class EchoServer extends Server
 
 
     /**
-     * Get the last payload received by the echo server.
+     * Get the last payload received by the ditto server.
      *
      * @return array|null
      */

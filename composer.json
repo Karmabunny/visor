@@ -6,7 +6,8 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "karmabunny\\visor\\": "src/"
+            "karmabunny\\visor\\": "src/",
+            "karmabunny\\visor\\echo\\": "src/compat/"
         }
     },
     "require-dev": {

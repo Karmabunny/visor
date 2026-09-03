@@ -1,6 +1,6 @@
 <?php
 /**
- * This is the server implementation half of the EchoServer server instance.
+ * This is the server implementation half of the DittoServer server instance.
  */
 
 use karmabunny\visor\CliRequest;

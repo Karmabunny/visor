@@ -4,7 +4,7 @@ namespace karmabunny\visor;
 
 /**
  *
- * @package karmabunny/echoserver
+ * @package karmabunny/visor
  */
 class CliRequest
 {

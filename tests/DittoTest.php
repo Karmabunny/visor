@@ -1,6 +1,6 @@
 <?php
 
-use karmabunny\visor\echo\EchoServer;
+use karmabunny\visor\ditto\DittoServer;
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/Http.php';
@@ -8,19 +8,19 @@ require_once __DIR__ . '/Http.php';
 /**
  * A basic echo test of path + body + headers.
  *
- * The echo server is created in the before-class hook.
+ * The ditto server is created in the before-class hook.
  */
-class EchoTest extends TestCase
+class DittoTest extends TestCase
 {
 
-    /** @var EchoServer */
+    /** @var DittoServer */
     public static $server;
 
 
     public static function setUpBeforeClass(): void
     {
         if (!self::$server) {
-            self::$server = EchoServer::create([
+            self::$server = DittoServer::create([
                 'path' => dirname(__DIR__) . '/logs/echo',
             ]);
         }

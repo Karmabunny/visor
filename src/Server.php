@@ -15,7 +15,7 @@ use karmabunny\visor\errors\VisorException;
  *
  * The log is located in the working directory: `visor.log`
  *
- * For an example implementation, {@see EchoServer} and the `echo.php` script.
+ * For an example implementation, {@see DittoServer} and the `ditto.php` script.
  *
  * @package karmabunny\visor
  */

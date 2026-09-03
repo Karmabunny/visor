@@ -58,18 +58,18 @@ class MyServerTest extends TestCase
 ```
 
 
-### Echo Server
+### Ditto Server (echo)
 
 ```php
-use karmabunny\visor\EchoServer;
+use karmabunny\visor\DittoServer;
 use PHPUnit\Framework\TestCase;
 
 class ClientTest extends TestCase
 {
     public function testThings()
     {
-        // This creates an echo server at localhost:8080
-        $server = EchoServer::create();
+        // This creates an ditto server at localhost:8080
+        $server = DittoServer::create();
 
         // Imagine this to be some kind of client that hits a remote
         // server of sorts.
