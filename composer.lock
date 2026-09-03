@@ -4,24 +4,24 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "54ecebd266252c7b1ffe5ded87111ec5",
+    "content-hash": "c5233754fce7ff91d27d8a94732e4e91",
     "packages": [
         {
             "name": "karmabunny/interfaces",
-            "version": "v1.0.1",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Karmabunny/kbinterfaces.git",
-                "reference": "32b0489a5681022be70d37512f28603359ad1fbb"
+                "reference": "31513261005e7ffaf28fdf4aef5e58762790ab08"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Karmabunny/kbinterfaces/zipball/32b0489a5681022be70d37512f28603359ad1fbb",
-                "reference": "32b0489a5681022be70d37512f28603359ad1fbb",
+                "url": "https://api.github.com/repos/Karmabunny/kbinterfaces/zipball/31513261005e7ffaf28fdf4aef5e58762790ab08",
+                "reference": "31513261005e7ffaf28fdf4aef5e58762790ab08",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2|^8"
+                "php": "^8.2"
             },
             "require-dev": {
                 "phpcompatibility/php-compatibility": "^9.3",
@@ -53,9 +53,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Karmabunny/kbinterfaces/issues",
-                "source": "https://github.com/Karmabunny/kbinterfaces/tree/v1.0.1"
+                "source": "https://github.com/Karmabunny/kbinterfaces/tree/v2.0.0"
             },
-            "time": "2025-11-11T22:47:53+00:00"
+            "time": "2026-09-03T00:52:54+00:00"
         },
         {
             "name": "karmabunny/router",
