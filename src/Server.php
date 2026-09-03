@@ -82,7 +82,7 @@ abstract class Server implements ConfigurableInitInterface
 
 
     /** @inheritdoc */
-    public function update(iterable $config): void
+    public function update($config): void
     {
         $this->config->update($config);
     }

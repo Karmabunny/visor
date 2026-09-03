@@ -60,7 +60,7 @@ class ServerConfig implements ConfigurableInterface
 
 
     /** @inheritdoc */
-    public function update(iterable $config): void
+    public function update($config): void
     {
         foreach ($config as $key => $value) {
             if (!property_exists($this, $key)) continue;
