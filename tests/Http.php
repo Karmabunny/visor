@@ -23,7 +23,7 @@ class Http
      * @param string|null $body
      * @return string|false
      */
-    public static function request(string $url, array $headers = [], string $body = null)
+    public static function request(string $url, array $headers = [], ?string $body = null)
     {
         $http = [];
 
